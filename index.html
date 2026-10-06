@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <title>PHP Site Launcher</title>
+  <script>
+    if (location.protocol === 'file:' || /\/php-sites\/index\.html$/i.test(location.pathname)) {
+      location.replace('http://127.0.0.1/php-sites/index.php');
+    }
+  </script>
   <style>
     :root {
       --bg: #eaf0f7;
@@ -115,6 +120,8 @@
     kbd { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); padding: 2px 7px; border: 1px solid var(--line); border-radius: 6px; color: #40536b; background: #f3f6fa; font: 11px/1.5 inherit; }
     #sort { height: 48px; min-width: 166px; padding: 0 30px 0 13px; border: 1px solid var(--line); border-radius: 14px; outline: none; color: var(--text); background: rgba(255, 255, 255, .94); font: 13px/1.5 inherit; cursor: pointer; }
     #sort:focus { border-color: rgba(156,255,87,.6); box-shadow: 0 0 0 4px rgba(156,255,87,.08); }
+    .logout { display: grid; height: 48px; place-items: center; padding: 0 13px; border: 1px solid #b96b6b; border-radius: 14px; color: #8a2525; background: #fff4f4; font-size: 13px; font-weight: 750; text-decoration: none; }
+    .logout:hover { color: #fff; background: #9c2c2c; border-color: #9c2c2c; }
 
     .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
 
@@ -205,6 +212,7 @@
           <option value="complexity">Complexitate ↓</option>
           <option value="potential">Potențial de vânzare ↓</option>
         </select>
+        <a class="logout" href="index.php?logout=1">Ieșire</a>
       </div>
     </header>
 
