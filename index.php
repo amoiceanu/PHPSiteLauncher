@@ -3,22 +3,34 @@ declare(strict_types=1);
 
 session_name('php_launcher_session');
 session_set_cookie_params([
+    'path' => '/',
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
     'httponly' => true,
     'samesite' => 'Lax',
 ]);
 session_start();
+header('Cache-Control: no-store, private');
 
 const LAUNCHER_ADMIN = 'admin';
 const LAUNCHER_PASSWORD_HASH = '$2y$12$gQYRqlFjEQfNtRt9JIIGE.bvepcoAswIP8wDQlOD1vhif8fKagmwa';
 
 function redirectToLauncher(): never
 {
-    header('Location: /php-sites/index.php', true, 303);
+    header('Location: /index.php', true, 303);
     exit;
 }
 
 if (isset($_GET['logout'])) {
     $_SESSION = [];
+    $cookie = session_get_cookie_params();
+    setcookie(session_name(), '', [
+        'expires' => time() - 3600,
+        'path' => $cookie['path'],
+        'domain' => $cookie['domain'],
+        'secure' => $cookie['secure'],
+        'httponly' => $cookie['httponly'],
+        'samesite' => $cookie['samesite'],
+    ]);
     session_destroy();
     redirectToLauncher();
 }
@@ -77,7 +89,7 @@ if (empty($_SESSION['launcher_admin'])):
     <h1>PHP Site Launcher</h1>
     <p>Autentifică-te pentru a accesa proiectele locale și evaluările lor.</p>
     <?php if ($error !== ''): ?><div class="error" role="alert"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
-    <form method="post" action="/php-sites/index.php">
+    <form method="post" action="/index.php">
       <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf'], ENT_QUOTES, 'UTF-8') ?>">
       <label>Utilizator<input name="username" type="text" autocomplete="username" required autofocus></label>
       <label>Parolă<input name="password" type="password" autocomplete="current-password" required></label>
@@ -92,4 +104,4 @@ exit;
 endif;
 
 header('Cache-Control: no-store, private');
-readfile(__DIR__.'/index.html');
+require __DIR__.'/render.php';
